@@ -1,0 +1,11 @@
+inicio
+   inteiro:a;
+   imprima ("digite um valor para a:");
+   leia(a);
+   se a = 5
+      então
+         escreva ;
+      senão
+         escreva
+   fim_se
+fim

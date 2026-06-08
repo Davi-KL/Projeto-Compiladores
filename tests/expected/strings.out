@@ -1,0 +1,13 @@
+COD    LEXEMA                         POS
+---    ------                         ---
+13     imprima                        -
+204    (                              -
+102    "ola"                          0
+205    )                              -
+214    ;                              -
+13     imprima                        -
+204    (                              -
+102    "teste com numero 5"           1
+205    )                              -
+214    ;                              -
+0      EOF                            -
