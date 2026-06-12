@@ -393,12 +393,15 @@ O programa aceita duas formas de entrada:
 
 Uma linha por token:
 ```
-COD    LEXEMA                         POS
----    ------                         ---
-<cod>  <lexema>                       <pos|-|
+COD    NOME           LEXEMA                         POS
+---    ----           ------                         ---
+<cod>  <nome>         <lexema>                       <pos|->
 ```
 
-Palavras reservadas e operadores exibem `-` na coluna POS. Identificadores e constantes exibem o índice numérico na tabela.
+- **COD** — código inteiro do token.
+- **NOME** — nome simbólico do token (ex.: `TK_INICIO`, `TK_IDENT`, `EOF_TOKEN`).
+- **LEXEMA** — texto original lido do programa fonte.
+- **POS** — índice na tabela de símbolos; `-` para palavras reservadas e operadores.
 
 ---
 
@@ -425,35 +428,35 @@ fim
 
 **Saída:**
 ```
-COD    LEXEMA                         POS
----    ------                         ---
-1      inicio                         -
-3      inteiro                        -
-213    :                              -
-100    a                              0
-214    ;                              -
-13     imprima                        -
-204    (                              -
-102    "digite um valor para a:"      0
-205    )                              -
-214    ;                              -
-12     leia                           -
-204    (                              -
-100    a                              0
-205    )                              -
-214    ;                              -
-4      se                             -
-100    a                              0
-210    =                              -
-101    5                              0
-5      então                          -
-14     escreva                        -
-214    ;                              -
-6      senão                          -
-14     escreva                        -
-7      fim_se                         -
-2      fim                            -
-0      EOF                            -
+COD    NOME           LEXEMA                         POS
+---    ----           ------                         ---
+1      TK_INICIO      inicio                         -
+3      TK_INTEIRO     inteiro                        -
+213    TK_DPONTOS     :                              -
+100    TK_IDENT       a                              0
+214    TK_PVIRG       ;                              -
+13     TK_IMPRIMA     imprima                        -
+204    TK_ABRE_P      (                              -
+102    TK_CONST_LIT   "digite um valor para a:"      0
+205    TK_FECHA_P     )                              -
+214    TK_PVIRG       ;                              -
+12     TK_LEIA        leia                           -
+204    TK_ABRE_P      (                              -
+100    TK_IDENT       a                              0
+205    TK_FECHA_P     )                              -
+214    TK_PVIRG       ;                              -
+4      TK_SE          se                             -
+100    TK_IDENT       a                              0
+210    TK_IGUAL       =                              -
+101    TK_CONST_INT   5                              0
+5      TK_ENTAO       então                          -
+14     TK_ESCREVA     escreva                        -
+214    TK_PVIRG       ;                              -
+6      TK_SENAO       senão                          -
+14     TK_ESCREVA     escreva                        -
+7      TK_FIM_SE      fim_se                         -
+2      TK_FIM         fim                            -
+0      EOF_TOKEN      EOF                            -
 ```
 
 Observações:
@@ -477,39 +480,39 @@ fim
 
 **Saída:**
 ```
-COD    LEXEMA                         POS
----    ------                         ---
-1      inicio                         -
-3      inteiro                        -
-213    :                              -
-100    b                              0
-214    ;                              -
-3      inteiro                        -
-213    :                              -
-100    c                              1
-214    ;                              -
-13     imprima                        -
-12     leia                           -
-204    (                              -
-100    c                              1
-205    )                              -
-214    ;                              -
-8      para                           -
-100    b                              0
-210    =                              -
-101    0                              0
-9      até                            -
-100    c                              1
-10     passo                          -
-101    2                              1
-13     imprima                        -
-204    (                              -
-100    b                              0
-205    )                              -
-214    ;                              -
-11     fim_para                       -
-2      fim                            -
-0      EOF                            -
+COD    NOME           LEXEMA                         POS
+---    ----           ------                         ---
+1      TK_INICIO      inicio                         -
+3      TK_INTEIRO     inteiro                        -
+213    TK_DPONTOS     :                              -
+100    TK_IDENT       b                              0
+214    TK_PVIRG       ;                              -
+3      TK_INTEIRO     inteiro                        -
+213    TK_DPONTOS     :                              -
+100    TK_IDENT       c                              1
+214    TK_PVIRG       ;                              -
+13     TK_IMPRIMA     imprima                        -
+12     TK_LEIA        leia                           -
+204    TK_ABRE_P      (                              -
+100    TK_IDENT       c                              1
+205    TK_FECHA_P     )                              -
+214    TK_PVIRG       ;                              -
+8      TK_PARA        para                           -
+100    TK_IDENT       b                              0
+210    TK_IGUAL       =                              -
+101    TK_CONST_INT   0                              0
+9      TK_ATE         até                            -
+100    TK_IDENT       c                              1
+10     TK_PASSO       passo                          -
+101    TK_CONST_INT   2                              1
+13     TK_IMPRIMA     imprima                        -
+204    TK_ABRE_P      (                              -
+100    TK_IDENT       b                              0
+205    TK_FECHA_P     )                              -
+214    TK_PVIRG       ;                              -
+11     TK_FIM_PARA    fim_para                       -
+2      TK_FIM         fim                            -
+0      EOF_TOKEN      EOF                            -
 ```
 
 Observações:
@@ -1008,6 +1011,50 @@ Token proximo_token(void) {
 #include "symtable.h"
 #include "tokens.h"
 
+static const char *nome_token(int codigo) {
+    switch (codigo) {
+        case EOF_TOKEN:    return "EOF_TOKEN";
+        case ERRO:         return "ERRO";
+        case TK_INICIO:    return "TK_INICIO";
+        case TK_FIM:       return "TK_FIM";
+        case TK_INTEIRO:   return "TK_INTEIRO";
+        case TK_SE:        return "TK_SE";
+        case TK_ENTAO:     return "TK_ENTAO";
+        case TK_SENAO:     return "TK_SENAO";
+        case TK_FIM_SE:    return "TK_FIM_SE";
+        case TK_PARA:      return "TK_PARA";
+        case TK_ATE:       return "TK_ATE";
+        case TK_PASSO:     return "TK_PASSO";
+        case TK_FIM_PARA:  return "TK_FIM_PARA";
+        case TK_LEIA:      return "TK_LEIA";
+        case TK_IMPRIMA:   return "TK_IMPRIMA";
+        case TK_ESCREVA:   return "TK_ESCREVA";
+        case TK_E:         return "TK_E";
+        case TK_OU:        return "TK_OU";
+        case TK_NAO:       return "TK_NAO";
+        case TK_IDENT:     return "TK_IDENT";
+        case TK_CONST_INT: return "TK_CONST_INT";
+        case TK_CONST_LIT: return "TK_CONST_LIT";
+        case TK_MAIS:      return "TK_MAIS";
+        case TK_MENOS:     return "TK_MENOS";
+        case TK_MULT:      return "TK_MULT";
+        case TK_DIV:       return "TK_DIV";
+        case TK_ABRE_P:    return "TK_ABRE_P";
+        case TK_FECHA_P:   return "TK_FECHA_P";
+        case TK_MAIOR:     return "TK_MAIOR";
+        case TK_MENOR:     return "TK_MENOR";
+        case TK_MAIOR_I:   return "TK_MAIOR_I";
+        case TK_MENOR_I:   return "TK_MENOR_I";
+        case TK_IGUAL:     return "TK_IGUAL";
+        case TK_DIFER:     return "TK_DIFER";
+        case TK_ATRIB:     return "TK_ATRIB";
+        case TK_DPONTOS:   return "TK_DPONTOS";
+        case TK_PVIRG:     return "TK_PVIRG";
+        case TK_VIRG:      return "TK_VIRG";
+        default:           return "?";
+    }
+}
+
 int main(int argc, char *argv[]) {
     FILE *fp = stdin;
 
@@ -1022,16 +1069,16 @@ int main(int argc, char *argv[]) {
     lexer_init(fp);
 
     /* Simula o parser: chama o léxico repetidamente até EOF */
-    printf("%-6s %-30s %s\n", "COD", "LEXEMA", "POS");
-    printf("%-6s %-30s %s\n", "---", "------", "---");
+    printf("%-6s %-14s %-30s %s\n", "COD", "NOME", "LEXEMA", "POS");
+    printf("%-6s %-14s %-30s %s\n", "---", "----", "------", "---");
 
     Token t;
     do {
         t = proximo_token();
         if (t.posicao == -1)
-            printf("%-6d %-30s -\n",  t.codigo, t.lexema);
+            printf("%-6d %-14s %-30s -\n",  t.codigo, nome_token(t.codigo), t.lexema);
         else
-            printf("%-6d %-30s %d\n", t.codigo, t.lexema, t.posicao);
+            printf("%-6d %-14s %-30s %d\n", t.codigo, nome_token(t.codigo), t.lexema, t.posicao);
     } while (t.codigo != EOF_TOKEN);
 
     if (fp != stdin) fclose(fp);
